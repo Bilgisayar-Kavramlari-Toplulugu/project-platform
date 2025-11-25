@@ -1,45 +1,4 @@
-# platform Takımı ve Rolleri (Örnek)
-<details open>
-<summary><strong>🇹🇷 Türkçe</strong></summary>
-<br>
-Bu projedeki güncel ekip üyelerini ve rollerini görmek için lütfen GitHub'ın kendi takım sayfasını ziyaret edin. 
-
-Oradaki liste **her zaman günceldir**.
-
-### ➡️ [Güncel Takım Listesi İçin Tıkla](https://github.com/orgs/Bilgisayar-Kavramlari-Toplulugu/teams/platform)
-
----
-## 📊 Takım İstatistikleri
-
-- **Proje Adı:** BKT Platform
-- **Takım Adı:** platform
-- **Proje Lideri:** @flovearth
-- **Toplam Üye Sayısı:** 1
-- **Maintainer Sayısı:** 1
-- **Member Sayısı:** 0
-
----
-
-Bu dokümanın amacı ise projedeki rolleri ve sorumlulukları tanımlamaktır.
-
-### 📜 Rol Tanımları
-
-#### Proje Lideri (Project Lead)
-*   Projenin genel vizyonundan ve teknik yönünden sorumludur.
-*   Nihai teknik kararları verir ve mimariyi yönlendirir.
-*   Takım koordinasyonunu sağlar ve `pull request`'lerde son onay merciidir.
-
-#### Takım Sorumlusu (Maintainer)
-*   Proje liderine teknik konularda yardımcı olur.
-*   Kod kalitesini denetler, `pull request`'leri inceler ve onaylar.
-*   Yeni katılan üyelere mentorluk yapar.
-
-#### Üye (Member)
-*   Projenin gelişimine aktif olarak kod yazarak, dokümantasyon hazırlayarak veya issue'ları çözerek katkıda bulunur.
-*   `Pull request` açar ve diğer üyelerin kodlarını inceler.
-*   Projenin standartlarına ve geliştirme akışına uyar.
-
-</details>
+# BKT Platform Takımı ve Rolleri
 
 <details>
 <summary><strong>🇬🇧 English</strong></summary>
@@ -47,6 +6,12 @@ Bu dokümanın amacı ise projedeki rolleri ve sorumlulukları tanımlamaktır.
 <br>
 
 To see the current members and roles of this project, please visit the official GitHub Team page. The list there is **always up-to-date**.
+
+Required Roles:
+
+1 x Devops Engineer
+1 x Cloud Engineer
+1 x Platform Engineer
 
 ### ➡️ [Click Here for the Current Team List](https://github.com/orgs/Bilgisayar-Kavramlari-Toplulugu/teams/platform)
 

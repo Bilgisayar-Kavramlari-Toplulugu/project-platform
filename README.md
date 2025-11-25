@@ -1,148 +1,109 @@
-# BKT Platform (Örnek)
-
 <div align="center">
+
+# BKT Platform
 
 [![GitHub](https://img.shields.io/badge/GitHub-Bilgisayar-Kavramlari-Toplulugu-181717?style=flat-square&logo=github)](https://github.com/Bilgisayar-Kavramlari-Toplulugu/project-platform)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-**Part of [BKT Platform](docs/Project-Definition.md)**
-
 </div>
 
----
+## Overview
 
-<details open>
-<summary><strong>🇹🇷 Türkçe</strong></summary>
+BKT Platform is a minimum GitOps setup that shows how we manage infrastructure with Terraform and continuously deliver platform services and applications to Amazon EKS with Flux. Push your code to GitHub, let GitHub Actions build and push images to Amazon ECR, and rely on Flux to keep the cluster in sync. The result is an HTTPS endpoint fronted by AWS Load Balancer Controller, Route 53, and ACM.
 
-<br>
+## Vision
 
-> **ÖNEMLİ:** Bu repository **BKT Platform** projesinin bir parçasıdır. Proje hakkında detaylı bilgi için [`docs/Project-Definition.md`](docs/Project-Definition.md) dosyasına bakın.
+Create a self-service developer platform on AWS where infrastructure is defined once, delivery is automated end to end, and secrets, observability, and access are first-class citizens. Everything needed to run an app in the dev environment lives in Git and is reconciled by Flux.
 
-## 📖 Hakkında
+## Core Workflow
 
-<!-- Bu repository'nin ne yaptığını buraya yazın -->
+1. Push code and Helm changes to GitHub.
+2. GitHub Actions runs tests, builds the image, and pushes to ECR.
+3. Flux notices the change, updates HelmReleases, and applies manifests to EKS.
+4. AWS Load Balancer Controller exposes the app through ACM-backed TLS and Route 53 DNS.
+5. Pods pull secrets from Vault, while logs and metrics land in OpenSearch and Grafana.
 
-## 🚀 Kurulum
+## Platform Footprint
 
-### Gereksinimler
+- **Infrastructure:** Terraform modules covering VPC, networking, IAM with GitHub OIDC, EKS control plane and node groups, ECR, MongoDB Atlas, Route 53, and ACM.
+- **Platform services:** Flux-managed Helm releases for Vault (with Agent Injector), Authentik, Headlamp, MySQL, OpenSearch/Elasticsearch with Kibana, Grafana, and optional Fluent Bit.
+- **Applications:** Sample Helm chart including Deployment, Service, Ingress, ConfigMap, and Vault-powered secrets handling.
 
-- Gerekli araçları buraya listeleyin
+## Tech Stack
 
-### Başlangıç
+- **AWS EKS:** Managed Kubernetes control plane and worker nodes that host platform workloads.
+- **Terraform:** Infrastructure-as-code tool that provisions AWS resources and third-party integrations.
+- **FluxCD:** GitOps controller that syncs Kubernetes manifests and Helm releases from Git.
+- **Helm:** Package manager used to template and install platform and application charts.
+- **HashiCorp Vault:** Central secrets store with Kubernetes auth and Agent Injector for secure secret delivery.
+- **OpenSearch/Elasticsearch:** Log storage and search engine powering the logging pipeline.
+- **Kibana:** UI for exploring logs indexed in OpenSearch/Elasticsearch.
+- **Grafana:** Dashboard layer for visualizing metrics and logs via Elasticsearch datasource.
+- **MongoDB Atlas:** Managed document database provisioned via Terraform for application persistence.
+- **MySQL:** Relational database deployed with a Helm chart for services that need SQL storage.
+- **GitHub Actions:** CI pipeline that builds, tests, and publishes container images plus manifest updates.
+- **Amazon ECR:** Private container registry that stores application images built in CI.
+- **Authentik:** Identity provider offering SSO for platform access.
+- **Headlamp:** Web UI for Kubernetes cluster inspection and developer workflows.
 
-```bash
-git clone https://github.com/Bilgisayar-Kavramlari-Toplulugu/project-platform.git
-cd project-platform
+## Architecture Highlights
 
-# Kurulum adımlarını buraya ekleyin
-```
+- Terraform owns the AWS foundation and integrates third-party services such as MongoDB Atlas.
+- Flux bootstraps itself, watches Git, and keeps the cluster aligned with desired state.
+- Vault Agent Injector wires Kubernetes auth to secrets delivery without baking secrets into images.
+- Observability combines OpenSearch/Elasticsearch, Kibana, and Grafana for a single-node, dev-friendly setup.
+- Authentik and Headlamp simplify secure cluster access for developers.
 
-## 💻 Kullanım
+## Visual Guides
 
-```bash
-# Uygulamayı çalıştırma komutunu buraya ekleyin
-```
+**End-to-End Workflow**
+![End-to-End Workflow](docs/diagram-end-to-end.png)
 
-## 📁 Proje Yapısı
+**High-Level Architecture**
+![High-Level Architecture](docs/diagram-high-level-architecture.png)
 
-```
-project-platform/
-├── src/          # Kaynak kodlar
-├── tests/        # Testler
-├── docs/         # Dokümantasyon
-└── README.md     # Bu dosya
-```
+**Terraform Topology**
+![Terraform Diagram](docs/diagram-terraform.png)
 
-## 🧪 Test
+**Flux GitOps Layout**
+![Flux Hierarchy](docs/diagram-gitops.png)
 
-```bash
-# Test komutlarını buraya ekleyin
-```
+**Vault Secrets Flow**
+![Vault Flow](docs/diagram-vault.png)
 
-## 🤝 Katkıda Bulunma
+## Scope
 
-Katkıda bulunmak için lütfen [`CONTRIBUTING.md`](.github/CONTRIBUTING.md) dosyasını inceleyin.
+- **In scope:** Terraform modules for core AWS services, Flux bootstrap and GitOps layout, platform add-ons (Vault, observability stack, SSO, DBs), sample application Helm chart, GitHub Actions pipeline to build/push images.
+- **Out of scope:** Multi-cloud portability, advanced deployment strategies (blue/green, canary), strict compliance regimes, production-grade high availability, detailed cost management.
 
-## 📚 Dokümantasyon
+## Prerequisites
 
-- [Proje Tanımı](docs/Project-Definition.md)
-- [Mimari Genel Bakış](docs/Architecture-Overview.md)
-- [Geliştirme Akışı](docs/Development-Workflow.md)
+- AWS account with permissions for EKS, VPC, ACM, Route 53, IAM, and ECR.
+- Terraform CLI
+- Helm CLI
+- Configured GitHub Actions runner (OIDC to AWS and ECR access)
 
-## 📄 Lisans
+## Getting Started
 
-Bu proje MIT Lisansı ile lisanslanmıştır - detaylar için [LICENSE](LICENSE) dosyasına bakın.
+1. Review the docs in `docs/` for project goals, architecture, and workflow.
+2. Apply the Terraform modules (under `infrastructure/`) to provision network, IAM, EKS, and optional MongoDB Atlas resources.
+3. Bootstrap Flux in the cluster so it reconciles the platform and application charts.
+4. Modify the sample application chart, commit, and push. Flux will deploy the change automatically.
 
----
-
-**Proje Lideri:** [@flovearth](https://github.com/flovearth)
-
-</details>
-
-<details>
-<summary><strong>🇬🇧 English</strong></summary>
-
-<br>
-
-> **IMPORTANT:** This repository is part of **BKT Platform** project. See [`docs/Project-Definition.md`](docs/Project-Definition.md) for details.
-
-## 📖 About
-
-<!-- Describe what this repository does -->
-
-## 🚀 Installation
-
-### Requirements
-
-- List required tools here
-
-### Getting Started
-
-```bash
-git clone https://github.com/Bilgisayar-Kavramlari-Toplulugu/project-platform.git
-cd project-platform
-
-# Add installation steps here
-```
-
-## 💻 Usage
-
-```bash
-# Add command to run the application
-```
-
-## 📁 Project Structure
-
-```
-project-platform/
-├── src/          # Source code
-├── tests/        # Tests
-├── docs/         # Documentation
-└── README.md     # This file
-```
-
-## 🧪 Testing
-
-```bash
-# Add test commands here
-```
-
-## 🤝 Contributing
-
-Please see [`CONTRIBUTING.md`](.github/CONTRIBUTING.md) for contribution guidelines.
-
-## 📚 Documentation
+## Reference Docs
 
 - [Project Definition](docs/Project-Definition.md)
 - [Architecture Overview](docs/Architecture-Overview.md)
 - [Development Workflow](docs/Development-Workflow.md)
+- [Team](docs/Team.md)
+- [Verified Commits Guide](docs/Verified-Commits-Guide.md)
+- [Wiki Home](docs/Wiki-Home.md)
 
-## 📄 License
+## Contributing
 
-This project is licensed under the MIT License - see [LICENSE](LICENSE) file for details.
+See [CONTRIBUTING](.github/CONTRIBUTING.md) for coding standards, commit guidance, and required checks.
 
----
+## License
 
-**Project Lead:** [@flovearth](https://github.com/flovearth)
+MIT © Bilgisayar Kavramlari Toplulugu. See [LICENSE](LICENSE).
 
-</details>

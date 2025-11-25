@@ -1,73 +1,73 @@
 # Mimariye Genel Bakış (Örnek)
-<details open>
-<summary><strong>🇹🇷 Türkçe</strong></summary>
-<br>
-
-Bu sayfa, projenin yüksek seviyeli mimarisini, ana bileşenlerini ve bu bileşenlerin birbiriyle olan ilişkilerini açıklamaktadır.
-
----
-
-*Bu alan projenin teknik mimarisi geliştikçe doldurulmalıdır.*
-
----
-
-## Ana Bileşenler
-
-- **Frontend:** (Örn: React, Next.js ile geliştirilmiş kullanıcı arayüzü)
-- **Backend API:** (Örn: Node.js, Go ile geliştirilmiş servisler)
-- **Database:** (Örn: PostgreSQL veritabanı)
-- **Authentication Service:** (Örn: Auth0, Keycloak veya özel bir servis)
-
-## Sistem Mimarisi Şeması
-
----
-> **Not:** Buraya projenin mimarisini gösteren bir diyagram ekleyin. (Örn: Mermaid, PlantUML veya bir resim dosyası)
----
-
-## Veri Akışı
-
-(Kullanıcı isteğinden veritabanına kadar olan tipik bir veri akışını burada açıklayın.)
-
-## Teknolojiler ve Gerekçeleri
-
-- **Teknoloji A:** (Neden seçildiği, avantajları/dezavantajları)
-- **Teknoloji B:** (Neden seçildiği, avantajları/dezavantajları)
-
-</details>
 
 <details>
 <summary><strong>🇬🇧 English</strong></summary>
 
-<br>
+# Architecture Overview
 
-This page describes the high-level architecture of the Project project, its main components, and the relationships between these components.
+This document dives deeper into the architecture described in the repository README. It explains how Terraform, Flux, and the supporting services assemble into a GitOps-powered BKT Platform on AWS.
 
----
+## High-Level Design
 
-*This section should be filled out as the project's technical architecture develops.*
+The BKT Platform provisions AWS infrastructure with Terraform and runs workloads on Amazon EKS. FluxCD watches Git for desired state and reconciles Helm releases for both platform add-ons and applications. CI/CD is anchored in GitHub Actions, which builds and pushes container images to Amazon ECR before Flux applies updates in the cluster.
 
----
+## Infrastructure Layer (Terraform)
 
-## Main Components
+- Amazon VPC with segmented public and private subnets to isolate traffic.
+- Security groups and IAM roles, including GitHub OIDC trust relationships for CI/CD without static AWS keys.
+- Amazon EKS control plane with managed node groups sized for the dev environment.
+- Application Load Balancer managed by AWS Load Balancer Controller, backed by ACM certificates for TLS.
+- Amazon Route 53 records that map friendly hostnames to the ALB.
+- Amazon ECR repositories for platform and application container images.
+- MongoDB Atlas resources managed externally but provisioned through Terraform modules for consistent infrastructure state.
 
-- **Frontend:** (e.g., User interface developed with React, Next.js)
-- **Backend API:** (e.g., Services developed with Node.js, Go)
-- **Database:** (e.g., PostgreSQL database)
-- **Authentication Service:** (e.g., Auth0, Keycloak, or a custom service)
+## Kubernetes and GitOps Layer
 
-## System Architecture Diagram
+- FluxCD bootstraps into the cluster, watches Git repositories, and applies Kustomizations and HelmReleases.
+- Helm charts codify deployments for both the platform services and sample applications.
+- Namespace and RBAC conventions align with Terraform outputs to keep AWS and Kubernetes resources in sync.
 
----
-> **Note:** Add a diagram showing the project's architecture here. (e.g., Mermaid, PlantUML, or an image file)
----
+## Platform Add-ons (Helm)
 
-## Data Flow
+- Vault with Kubernetes auth and Agent Injector to distribute secrets to workloads securely.
+- OpenSearch/Elasticsearch paired with Kibana for centralized log collection and visualization.
+- Grafana dashboards connected to Elasticsearch to surface application and platform metrics.
+- Authentik as the identity provider delivering SSO across platform tools.
+- Headlamp for a lightweight Kubernetes user interface tailored to developers.
+- MySQL deployed via Helm chart for workloads requiring relational storage.
+- Optional Fluent Bit forwarding to push pod logs into the OpenSearch stack.
 
-(Describe a typical data flow from user request to database here.)
+## CI/CD Flow
 
-## Technologies and Rationale
+1. Developers push application code or Helm overrides to GitHub.
+2. GitHub Actions executes tests, builds container images, and pushes them to Amazon ECR.
+3. The pipeline updates manifests or Helm values in Git to reference the new image version.
+4. Flux detects repository changes and reconciles the cluster to the new desired state.
 
-- **Technology A:** (Why it was chosen, advantages/disadvantages)
-- **Technology B:** (Why it was chosen, advantages/disadvantages)
+## Networking and Security
 
-</details>
+- AWS Load Balancer Controller provisions ALBs and attaches ACM-issued certificates for TLS.
+- Route 53 maintains DNS records that route traffic to the ALB.
+- Network policies and security groups enforce least privilege between services.
+- Vault policies define which Kubernetes service accounts can access specific secrets.
+- GitHub Actions assumes AWS roles via OIDC, eliminating long-lived credentials in pipelines.
+
+## Observability and Operations
+
+- OpenSearch/Elasticsearch indexes logs collected from workloads or Fluent Bit.
+- Kibana offers log search and dashboards for troubleshooting.
+- Grafana aggregates metrics and logs, providing a central monitoring interface.
+- Single-node defaults keep the stack lightweight for development, with room to scale in production.
+
+## Identity and Developer Experience
+
+- Authentik delivers SSO across the platform, reducing account sprawl.
+- Headlamp provides an accessible Kubernetes dashboard for developers without kubectl proficiency.
+- Vault Agent Injector simplifies secrets retrieval by auto-injecting them into pods at runtime.
+
+## Data and Secrets Flow
+
+- Application pods authenticate to Vault via Kubernetes auth roles and receive secrets through the Agent Injector.
+- Logs flow from pods into OpenSearch/Elasticsearch and surface in Kibana and Grafana.
+- Metrics and dashboards in Grafana give teams feedback on platform health.
+- MongoDB Atlas and the in-cluster MySQL chart support application data needs depending on the workload profile.

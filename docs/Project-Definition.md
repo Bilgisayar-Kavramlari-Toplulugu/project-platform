@@ -1,109 +1,75 @@
-# Proje Tanımı (Örnek)
-
-<details open>
-<summary><strong>🇹🇷 Türkçe</strong></summary>
-
-<br>
-
-Bu belge **BKT Platform** projesinin amacını, hedeflerini ve kapsamını tanımlar.
-
----
-
-## 🎯 Proje Amacı
-
-<!-- Projenin temel amacını buraya yazın -->
-
-## 🔑 Ana Hedefler
-
-<!-- Projenin başarı kriterleri ve hedeflerini listeleyin -->
-
-- Hedef 1
-- Hedef 2
-- Hedef 3
-
-## 🗺️ Kapsam
-
-### ✅ Kapsam Dahilinde
-<!-- Projenin neleri içerdiğini listeleyin -->
-
-- Özellik/Modül 1
-- Özellik/Modül 2
-
-### ❌ Kapsam Dışında
-<!-- Projenin neleri içermediğini listeleyin -->
-
-- İçerilmeyen özellik 1
-- İçerilmeyen özellik 2
-
-## 👥 Proje Ekibi
-
-**Proje Lideri:** @flovearth  
-
-**Takım Üyeleri:**
-<!-- Takım üyelerini buraya ekleyin -->
-
-## 🔗 İlgili Bağlantılar
-
-- [Takım Bilgileri](Team.md)
-- [Mimari Genel Bakış](Architecture-Overview.md)
-- [Geliştirme Akışı](Development-Workflow.md)
-
----
-
-<p align="right"><i>Bu belge Terraform tarafından otomatik oluşturulmuştur.</i></p>
-
-</details>
+# Project Definition
 
 <details>
 <summary><strong>🇬🇧 English</strong></summary>
 
-<br>
+## Overview
 
-This document defines the purpose, goals, and scope of **Project**.
+The BKT Platform demonstrates how to run a GitOps-enabled developer platform on AWS. Terraform provisions the cloud foundation, FluxCD keeps Amazon EKS in sync with Git, and GitHub Actions automates build and release pipelines. This document expands on the README by detailing the project’s motivation, expected value, and delivery boundaries.
 
----
+## Purpose
 
-## 🎯 Project Purpose
+- Provide a reusable reference implementation for GitOps-driven platform operations on AWS.
+- Streamline developer onboarding by standardizing infrastructure, deployment, secrets management, and observability.
+- Eliminate manual configuration drift through continuous reconciliation of infrastructure (Terraform) and workloads (Flux).
 
-<!-- Describe the main purpose of the project here -->
+## Why It Matters
 
-## 🔑 Key Objectives
+- **Consistency:** Infrastructure and application state live in version control, enabling reproducible environments.
+- **Security:** GitHub Actions authenticates via OIDC, Vault distributes secrets at runtime, and ACM enforces TLS across ingress traffic.
+- **Speed:** Automated builds, image publishing to Amazon ECR, and Flux-driven deployments reduce lead time from commit to cluster.
+- **Visibility:** OpenSearch, Kibana, and Grafana give teams immediate insights into logs and metrics without extra setup.
 
-<!-- List project success criteria and objectives -->
+## Key Objectives
 
-- Objective 1
-- Objective 2
-- Objective 3
+1. Provision AWS networking, compute, and supporting services with Terraform modules (VPC, subnets, security groups, EKS, ALB, Route 53, ACM, ECR, IAM with GitHub OIDC, MongoDB Atlas).
+2. Bootstrap FluxCD to manage platform services and sample applications through Helm releases and Kustomizations.
+3. Deliver a CI/CD pipeline using GitHub Actions that builds, tests, and pushes container images plus updates manifests.
+4. Enable secure operations with Vault, enforce least-privilege access, and give developers SSO and UI access via Authentik and Headlamp.
 
-## 🗺️ Scope
+## Value Propositions
 
-### ✅ In Scope
-<!-- List what the project includes -->
+- **Platform Teams:** Gain a blueprint for automating infrastructure and platform add-ons without bespoke scripts.
+- **Application Developers:** Interact through Git commits and Helm overrides while benefiting from prewired secrets, databases, and dashboards.
+- **Security & Compliance:** Leverage ephemeral credentials, TLS everywhere, and auditable Git history for configuration changes.
+- **Operations:** Use observability tooling out of the box and rely on Git as the single source of truth for rollbacks and disaster recovery.
 
-- Feature/Module 1
-- Feature/Module 2
+## Scope
 
-### ❌ Out of Scope
-<!-- List what the project does not include -->
+### In Scope
 
-- Excluded feature 1
-- Excluded feature 2
+- Terraform modules for core AWS resources (VPC, subnets, security groups, ALB, Route 53, ACM, EKS node groups, ECR, IAM with GitHub OIDC).
+- Terraform-managed MongoDB Atlas integration.
+- Flux bootstrap, GitOps repository structure, and Helm releases for Vault, OpenSearch/Elasticsearch + Kibana, Grafana, Authentik, Headlamp, MySQL, and optional Fluent Bit.
+- Sample application Helm chart including Deployment, Service, Ingress, ConfigMap, and Vault-driven secrets wiring.
+- GitHub Actions workflows for build, test, image push, and manifest updates.
+- Route 53 DNS entries and ACM certificates delivering HTTPS endpoints fronted by AWS Load Balancer Controller.
 
-## 👥 Project Team
+### Out of Scope
 
-**Project Lead:** @flovearth  
+- Multi-cloud or hybrid-cloud support.
+- Advanced rollout patterns (blue/green, canary) beyond standard Flux deployments.
+- Production-grade high availability, auto-scaling policies, and cost-optimization practices.
+- Regulated compliance frameworks (PCI, SOC2) or hardening beyond development defaults.
 
-**Team Members:**
-<!-- Add team members here -->
+## Success Criteria
 
-## 🔗 Related Links
+- Terraform plans and applies execute without manual post-configuration steps.
+- Flux reconciles platform and application changes from Git within minutes of merge.
+- Developers can modify the sample Helm chart and see the update live through the managed HTTPS endpoint.
+- Observability dashboards display workload metrics and logs without additional configuration.
 
-- [Team Information](Team.md)
+## Stakeholders
+
+- **Project Lead:** @flovearth
+- **Platform Engineering:** Owns Terraform modules, Flux configuration, and platform add-ons.
+- **Application Teams:** Consume the platform, contribute Helm overrides, and manage service lifecycles.
+- **Security & Ops:** Review IAM policies, Vault roles, and monitor observability outputs.
+
+## Related Documents
+
 - [Architecture Overview](Architecture-Overview.md)
 - [Development Workflow](Development-Workflow.md)
-
----
-
-<p align="right"><i>This document was automatically created by Terraform.</i></p>
+- [Team Information](Team.md)
 
 </details>

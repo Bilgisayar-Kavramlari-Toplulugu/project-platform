@@ -1,35 +1,4 @@
-# Geliştirme Akışı (Örnek)
-<details open>
-<summary><strong>🇹🇷 Türkçe</strong></summary>
-<br>
-
-Bu belge, Projedeki geliştirme süreçleri, standartları ve iş akışları için bir rehberdir.
-
-## İş Akışı
-
-1.  **Issues:** Tüm işler (yeni özellikler, hatalar, görevler) GitHub Issues üzerinden takip edilmelidir. Her iş için bir issue oluşturulmalıdır.
-2.  **Branches:** Her issue için `main` branch'inden yeni bir özellik (feature) branch'i oluşturulmalıdır. Branch isimlendirme kuralı: `feature/issue-no-kisa-aciklama` (Örn: `feature/123-add-user-login`).
-3.  **Pull Requests (PRs):** Tüm kod değişiklikleri PR üzerinden `main` branch'ine birleştirilmelidir. PR açarken ilgili issue'yu referans gösterin (`Task Ticket Number #123`).
-4.  **Kod İnceleme (Code Review):** Her PR, proje lideri veya belirlenmiş en az bir kıdemli geliştirici tarafından onaylanmalıdır.
-
-## Kod Standartları
-
-- Her repository'de tanımlanan kodlama standartlarına ve linting kurallarına uyun.
-- Anlaşılır ve açıklayıcı commit mesajları yazın.
-- Yeni eklenen veya değiştirilen özellikler için testler yazın.
-- Yaptığınız değişikliklerle ilgili dokümantasyonu (README, Wiki vb.) güncelleyin.
-
-## Başlangıç
-
-- **Ön Koşullar:**
-  - Git'in lokal makinenizde kurulu olması.
-  - Proje repolarına erişim izninizin olması.
-- **Kurulum:**
-  - İlgili repoyu klonlayın.
-  - Reponun `README.md` dosyasındaki kurulum adımlarını takip edin.
-  - İlk görevleriniz için size atanan "initial setup issue"yu inceleyin.
-
-</details>
+# Geliştirme Akışı
 
 <details>
 <summary><strong>🇬🇧 English</strong></summary>
@@ -37,7 +6,7 @@ Bu belge, Projedeki geliştirme süreçleri, standartları ve iş akışları i�
 <br>
 
 
-This document is a guide for development processes, standards, and workflows in the Project project.
+This document is a guide for development processes, standards, and workflows in the BKT Platform Project project.
 
 ## Workflow
 
